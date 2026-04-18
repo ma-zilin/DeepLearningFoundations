@@ -18,17 +18,6 @@ Establish intuitive understanding of tensor transformations—not mathematical d
 | Vision Backbone | 05.01–05.31 | CNN intuition + ResNet anatomy |
 | Physical Closure | 06.01–07.15 | YOLOv8 + Arduino visual servo |
 
-## Structure
-d2l-pytorch/
-├── ch03_linear/           # Linear regression (completed)
-├── ch04_mlp/              # MLP: forward, backward, activation
-├── ch06_cnn/              # Conv layers, pooling, BatchNorm
-└── ch07_modern_cnn/       # ResNet, DenseNet analysis
-karpathy-nn/
-└── micrograd/             # Hand-rolled autograd engine
-arduino-bridge/
-└── yolo_servo/            # Phase 1 capstone: visual servo loop
-
 ## Key Intuitions
 
 | Operation | Instinct Check |
