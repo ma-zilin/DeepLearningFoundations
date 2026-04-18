@@ -54,12 +54,6 @@ Camera ──► YOLOv8 (center error) ──► PID ──► Serial ──► 
 - [ ] YOLOv8 deployment
 - [ ] Arduino closed-loop demo
 
-## Why This Matters
-
-> *"The system architect's value lies in connecting two worlds."*
-
-This repo trains the first translation layer: turning formulas from *Dive into Deep Learning* into PyTorch code that will eventually drive real motors.
-
 ## Reference
 
 - D2L PyTorch Edition: Ch.3, 4, 6, 7 only
