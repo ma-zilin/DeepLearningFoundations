@@ -1,0 +1,23 @@
+# 模型与数据（绝对不能上传）
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+data/
+datasets/
+checkpoints/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# 系统文件
+.DS_Store
+
+# 环境（如果包含密钥）
+.env
