@@ -1,50 +1,76 @@
 # Deep Learning Foundations
 
-&gt; Building tensor intuition for embodied AI. Phase 1: 2026.04 – 2026.07
+A learning portfolio for building the neural-network foundations needed for robot learning and embodied AI. The repository combines textbook exercises, small neural networks built for understanding, and a fully traceable two-dimensional diffusion experiment.
 
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+The emphasis is not on production-ready frameworks. Each implementation is kept small enough to connect mathematical ideas, tensor operations, code, and experimental evidence.
 
-## Objective
+## Learning Path
 
-Establish intuitive understanding of tensor transformations—not mathematical derivations—to bridge deep learning algorithms into the physical world.
+The repository follows a progression from basic tensor operations to generative modeling and robot-learning concepts:
 
-## Roadmap
+```text
+deep learning fundamentals
+→ neural networks from first principles
+→ generative modeling with DDPM
+→ conceptual bridge to Diffusion Policy
+```
 
-| Phase | Timeline | Milestone |
-|-------|----------|-----------|
-| Foundation | 04.15–04.30 | MLP from scratch (Ch.3–4) |
-| Vision Backbone | 05.01–05.31 | CNN intuition + ResNet anatomy |
-| Physical Closure | 06.01–07.15 | YOLOv8 + Arduino visual servo |
+| Directory | Focus | Representative work |
+| --- | --- | --- |
+| [`d2l/`](d2l/) | Core deep learning with *Dive into Deep Learning* | Linear regression, multilayer perceptrons, CNNs, image classification, and Kaggle house-price regression |
+| [`karpathy-nn/`](karpathy-nn/) | Neural networks from first principles | MLP and Makemore exercises for understanding backpropagation and autoregressive modeling |
+| [`diffusion/`](diffusion/) | Generative modeling through a two-dimensional DDPM | Forward diffusion, timestep-conditioned noise prediction, reverse sampling, distribution evaluation, and ablation |
 
-## Key Intuitions
+## Featured Study: A Two-Dimensional DDPM
 
-| Operation | Instinct Check |
-|-----------|---------------|
-| `Conv2d(3,64,7,s=2)` | 3→64 channels, 7×7 kernel, halves spatial dims |
-| `nn.Linear(784,256)` | 200k params, flops ≈ batch×784×256 |
+The diffusion track builds a DDPM for a bimodal two-dimensional Gaussian distribution without relying on a high-level diffusion library. Its purpose is to make the complete data flow observable:
 
-## Capstone: Visual Servo
+```text
+bimodal samples
+→ forward noising
+→ timestep-conditioned noise prediction
+→ iterative reverse sampling
+→ quantitative distribution evaluation
+```
 
-**Stack:** YOLOv8 → Python PID → PySerial → Arduino SG90
-Camera ──► YOLOv8 (center error) ──► PID ──► Serial ──► Servo
+The implementation covers:
 
+- closed-form sampling at arbitrary diffusion timesteps;
+- sinusoidal timestep embeddings and epsilon-prediction training;
+- checkpointed training and iterative reverse generation;
+- evaluation across three independent sampling seeds;
+- a controlled ablation that removes timestep conditioning.
 
-**Deliverable:** `arduino_yolo_servo` repo + tracking GIF
+### Verified Results
 
-## Progress
+The generated samples are evaluated using mode balance, mode-center error, vertical bias, and within-mode standard deviation. All three sampling seeds passed the predefined criteria.
 
-- [x] Ch.3 Linear regression
-- [ ] Ch.4 MLP scratch implementation
-- [ ] Ch.6 CNN foundations
-- [ ] Ch.7 Modern CNNs
-- [ ] micrograd engine
-- [ ] YOLOv8 deployment
-- [ ] Arduino closed-loop demo
+| Experiment | Validation loss | Distribution evaluation |
+| --- | ---: | --- |
+| With timestep conditioning | 0.194 | Passed |
+| Without timestep conditioning | 0.384 | Failed |
 
-## Reference
+The ablation changes only whether the model uses its timestep features. It shows that timestep conditioning is necessary for this model to distinguish noise levels and recover the target distribution; the result is evidence for this experiment, not a general performance benchmark.
 
-- D2L PyTorch Edition: Ch.3, 4, 6, 7 only
-- Karpathy's micrograd (backprop from scratch)
-- YOLOv8 nano for edge deployment
+The DDPM variables and sampling process have also been mapped conceptually to action-sequence generation in Diffusion Policy. This repository does **not** contain a complete Diffusion Policy or robot-control implementation.
+
+See the [gate-based diffusion learning plan](diffusion/LEARNING_PLAN.md) for the detailed questions, experiments, and acceptance criteria.
+
+## What This Work Demonstrates
+
+- connecting mathematical definitions to tensor shapes, data flow, and executable code;
+- implementing the central DDPM mechanisms instead of treating diffusion as a black-box library;
+- evaluating a generative model with distribution-level metrics rather than relying only on visual inspection;
+- using a controlled ablation to test whether timestep conditioning provides meaningful information;
+- transferring the DDPM data flow from two-dimensional samples to conditional action-sequence generation.
+
+## Current Boundary
+
+This is a personal learning portfolio rather than a reusable framework or production system. The current diffusion work covers an unconditional two-dimensional DDPM and a conceptual mapping to Diffusion Policy; it does not yet include conditional diffusion training, visuomotor observations, action execution, or robot deployment.
+
+## References
+
+- [Dive into Deep Learning — PyTorch edition](https://d2l.ai/)
+- [Karpathy's Neural Networks: Zero to Hero](https://karpathy.ai/zero-to-hero.html)
+- [Denoising Diffusion Probabilistic Models](https://arxiv.org/abs/2006.11239)
+- [Diffusion Policy: Visuomotor Policy Learning via Action Diffusion](https://arxiv.org/abs/2303.04137)

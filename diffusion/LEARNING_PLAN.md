@@ -352,5 +352,3 @@ $$
 - [ ] G4：反向采样
 - [ ] G5：可复现与量化评测
 - [ ] G6：映射到 Diffusion Policy
-
-当前任务：完成 DDPM 论文 Abstract、Introduction 和 Figure 2，回答 G0 的四个问题。
