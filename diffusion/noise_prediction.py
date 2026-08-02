@@ -1,4 +1,4 @@
-"""G3-A：时间条件噪声预测网络的单批次过拟合测试。"""
+"""G3-A：时间条件噪声预测网络与单批次过拟合测试。"""
 
 import math
 import os
@@ -17,7 +17,7 @@ import torch
 from torch import nn
 
 from bimodal_data import generate_bimodal_data
-from ddpm_schedule import build_noise_schedule, q_sample
+from forward_diffusion import build_noise_schedule, q_sample
 
 
 SEED = 0
@@ -56,15 +56,19 @@ class SinusoidalTimeEmbedding(nn.Module):
 class NoisePredictor(nn.Module):
     """输入二维带噪点和时间步，输出二维噪声预测。"""
 
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        time_embedding_dim: int = 32,
+        hidden_dim: int = 128,
+    ) -> None:
         super().__init__()
-        self.time_embedding = SinusoidalTimeEmbedding(TIME_EMBEDDING_DIM)
+        self.time_embedding = SinusoidalTimeEmbedding(time_embedding_dim)
         self.network = nn.Sequential(
-            nn.Linear(2 + TIME_EMBEDDING_DIM, HIDDEN_DIM),
+            nn.Linear(2 + time_embedding_dim, hidden_dim),
             nn.SiLU(),
-            nn.Linear(HIDDEN_DIM, HIDDEN_DIM),
+            nn.Linear(hidden_dim, hidden_dim),
             nn.SiLU(),
-            nn.Linear(HIDDEN_DIM, 2),
+            nn.Linear(hidden_dim, 2),
         )
 
     def forward(
@@ -78,7 +82,7 @@ class NoisePredictor(nn.Module):
 
 
 def check_gradients(model: nn.Module) -> None:
-    """确认所有梯度有限，且至少存在非零梯度。"""
+    """确认所有参数得到有限梯度，且整体至少存在非零梯度。"""
     gradients = [
         parameter.grad
         for parameter in model.parameters()
@@ -88,14 +92,12 @@ def check_gradients(model: nn.Module) -> None:
         raise RuntimeError("至少有一个可训练参数没有梯度")
     if not all(torch.isfinite(gradient).all() for gradient in gradients):
         raise RuntimeError("检测到 NaN 或 Inf 梯度")
-
     nonzero_count = sum(
         int(torch.count_nonzero(gradient).item())
         for gradient in gradients
     )
     if nonzero_count == 0:
         raise RuntimeError("所有参数的梯度均为 0")
-
     total_norm = torch.sqrt(
         sum(torch.sum(gradient**2) for gradient in gradients)
     )
@@ -117,7 +119,6 @@ def save_loss_curve(loss_history: list[float]) -> Path:
     )
     axis.grid(alpha=0.25)
     figure.tight_layout()
-
     output_path = OUTPUT_DIR / "single_batch_overfit_loss.png"
     figure.savefig(output_path, dpi=160)
     plt.close(figure)
@@ -126,9 +127,9 @@ def save_loss_curve(loss_history: list[float]) -> Path:
 
 def main() -> None:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    torch.set_num_threads(1)
     torch.manual_seed(SEED)
     generator = torch.Generator().manual_seed(SEED)
-
     x_0, _ = generate_bimodal_data(
         num_samples=BATCH_SIZE,
         std=DATA_STD,
@@ -136,17 +137,8 @@ def main() -> None:
     )
     _, _, alpha_bars = build_noise_schedule(total_steps=T)
 
-    # 单批次过拟合要求这些张量在整个训练过程中保持不变。
-    timesteps = torch.randint(
-        low=0,
-        high=T,
-        size=(BATCH_SIZE,),
-        generator=generator,
-    )
-    epsilon = torch.randn(
-        x_0.shape,
-        generator=generator,
-    )
+    timesteps = torch.randint(0, T, (BATCH_SIZE,), generator=generator)
+    epsilon = torch.randn(x_0.shape, generator=generator)
     x_t, _ = q_sample(
         x_0=x_0,
         timestep_indices=timesteps,
@@ -154,16 +146,14 @@ def main() -> None:
         epsilon=epsilon,
     )
 
-    model = NoisePredictor()
+    model = NoisePredictor(TIME_EMBEDDING_DIM, HIDDEN_DIM)
     optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
     loss_function = nn.MSELoss()
-
     with torch.no_grad():
         initial_prediction = model(x_t, timesteps)
         initial_loss = loss_function(initial_prediction, epsilon).item()
         zero_baseline_loss = loss_function(
-            torch.zeros_like(epsilon),
-            epsilon,
+            torch.zeros_like(epsilon), epsilon
         ).item()
 
     assert initial_prediction.shape == epsilon.shape == (BATCH_SIZE, 2)
@@ -180,29 +170,24 @@ def main() -> None:
         optimizer.zero_grad()
         epsilon_prediction = model(x_t, timesteps)
         loss = loss_function(epsilon_prediction, epsilon)
-
         if not torch.isfinite(loss):
             raise RuntimeError(f"第 {step} 步出现 NaN 或 Inf loss")
-
         loss.backward()
         if step == 1:
             check_gradients(model)
         optimizer.step()
 
-        loss_value = loss.item()
-        loss_history.append(loss_value)
+        loss_history.append(loss.item())
         if step == 1 or step % LOG_INTERVAL == 0:
-            print(f"step={step:4d}, loss={loss_value:.8f}")
+            print(f"step={step:4d}, loss={loss.item():.8f}")
 
     final_loss = loss_history[-1]
     if final_loss >= 1e-3:
         raise RuntimeError(
             f"固定批次最终 loss={final_loss:.6f}，未达到 1e-3 验收线"
         )
-
-    output_path = save_loss_curve(loss_history)
     print(f"最终 loss={final_loss:.8f}")
-    print(f"过拟合曲线：{output_path}")
+    print(f"过拟合曲线：{save_loss_curve(loss_history)}")
 
 
 if __name__ == "__main__":
