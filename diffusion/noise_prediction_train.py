@@ -255,6 +255,7 @@ def main() -> None:
             "model_state_dict": model.state_dict(),
             "time_embedding_dim": TIME_EMBEDDING_DIM,
             "hidden_dim": HIDDEN_DIM,
+            "use_time_condition": model.use_time_condition,
             "total_steps": T,
             "beta_start": BETA_START,
             "beta_end": BETA_END,

@@ -60,8 +60,10 @@ class NoisePredictor(nn.Module):
         self,
         time_embedding_dim: int = 32,
         hidden_dim: int = 128,
+        use_time_condition: bool = True,
     ) -> None:
         super().__init__()
+        self.use_time_condition = use_time_condition
         self.time_embedding = SinusoidalTimeEmbedding(time_embedding_dim)
         self.network = nn.Sequential(
             nn.Linear(2 + time_embedding_dim, hidden_dim),
@@ -77,6 +79,8 @@ class NoisePredictor(nn.Module):
         timesteps: torch.Tensor,
     ) -> torch.Tensor:
         time_features = self.time_embedding(timesteps)
+        if not self.use_time_condition:
+            time_features = torch.zeros_like(time_features)
         model_input = torch.cat((x_t, time_features), dim=1)
         return self.network(model_input)
 

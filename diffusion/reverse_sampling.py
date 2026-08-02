@@ -309,6 +309,7 @@ def load_model_and_schedule(
     model = NoisePredictor(
         time_embedding_dim=checkpoint["time_embedding_dim"],
         hidden_dim=checkpoint["hidden_dim"],
+        use_time_condition=checkpoint.get("use_time_condition", True),
     )
     model.load_state_dict(checkpoint["model_state_dict"])
     betas, alphas, alpha_bars = build_noise_schedule(
