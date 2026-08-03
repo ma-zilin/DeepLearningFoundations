@@ -63,6 +63,56 @@ $$
 - 除非学习者明确要求，否则 Codex 不直接编写实验实现。
 - 通用网络层、优化器和自动微分直接使用 PyTorch，不从零重复实现。
 
+## 学习方式与材料
+
+本阶段采用：
+
+> gate-based 小实验为主线，课程片段补充概念，到达对应问题后再阅读论文。
+
+课程和论文不单独形成另一条待办路线。每一关按以下循环推进：
+
+1. 明确本关问题和出口。
+2. 阅读本关所需的最小原始材料。
+3. 学习者用自己的话复述关键概念和数据流。
+4. 学习者亲手完成最小实现或受控实验。
+5. 提交代码、输出、曲线或失败轨迹作为证据。
+6. 检查物理含义、关键权衡和常见陷阱，达到通过标准后再进入下一关。
+
+材料优先级为：
+
+> 本学习计划的当前 gate → 当前实验暴露的问题 → 对应课程片段 → 延伸论文与理论
+
+### 课程材料
+
+选择 Berkeley CS 185/285 的 Behavior Cloning 部分作为辅助材料，不完整学习整门强化学习课程：
+
+- B0：[`Lecture 2: Behavioral Cloning`](https://rail.eecs.berkeley.edu/deeprlcourse/static/slides/lec-2.pdf) 中专家示范、监督学习和连续动作策略部分。
+- B4–B5：Lecture 2 的 distribution shift 部分，以及 [`BC Distributional Shift`](https://rail.eecs.berkeley.edu/deeprlcourse/static/sections/section-2-2.pdf) 的问题设定和结论。完整 regret bound 证明不是通过本计划的必要条件。
+- B6：[`Lecture 3: Behavioral Cloning Part 2`](https://rail.eecs.berkeley.edu/deeprlcourse/static/slides/lec-3.pdf) 中 multimodal behavior、action chunking 和 diffusion policy 部分。
+
+选择该课程片段，是因为它从机器人序列决策的视角连接了监督学习、闭环分布偏移、action chunk 和 Diffusion Policy，与 B0–B6 的出口直接对应。暂不学习其中的 RL Basics、Policy Gradient、Actor-Critic、完整课程作业、预训练和多任务学习内容。
+
+### 论文材料
+
+- B0–B4 没有必读论文，先通过最小实验建立 observation-action 数据、开环预测和闭环控制之间的联系。
+- B5 在观察到 covariate shift 后，选读 DAgger 原论文 [`A Reduction of Imitation Learning and Structured Prediction to No-Regret Online Learning`](https://arxiv.org/abs/1011.0686) 的摘要、Introduction 和算法思想；不要求阅读完整证明，也不实现 DAgger。
+- B6 必读 [`Diffusion Policy: Visuomotor Policy Learning via Action Diffusion`](https://arxiv.org/abs/2303.04137v5) 的 Abstract、Introduction、方法总览和 action sequence / conditioning / receding-horizon 相关内容。实验细节和全部 benchmark 表格按问题回查。
+
+### BC 与强化学习的分类边界
+
+Behavior Cloning 通常属于 imitation learning，而不是 reinforcement learning。二者都学习策略，但监督信号不同：
+
+| Behavior Cloning | Reinforcement Learning |
+| --- | --- |
+| 从专家示范 `(observation, expert action)` 学习 | 从智能体与环境交互及 reward 学习 |
+| 直接拟合专家动作 | 优化期望累计回报 |
+| 训练本质是监督学习 | 训练本质是序列决策优化 |
+| 通常不需要 reward 或主动探索 | 通常需要 reward，并涉及探索问题 |
+
+BC 被放入强化学习课程，是因为部署时二者都形成 `policy → action → environment → next observation` 的闭环。策略的当前动作会影响未来输入，所以 BC 也需要研究普通独立同分布监督学习中不突出的 covariate shift 和误差累积。
+
+在本路线中，Diffusion Policy 使用专家示范和条件去噪目标生成动作序列，仍属于 behavior cloning / imitation learning；使用扩散模型或输出机器人策略，本身不会使它成为强化学习。只有引入 reward 并以累计回报优化策略时，才进入强化学习阶段。
+
 ## 最小主实验：一维点质量跟踪
 
 使用一个不依赖机器人框架的离散点质量系统。状态为位置和速度，目标是到达指定位置并停稳。
