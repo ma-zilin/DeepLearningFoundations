@@ -2,7 +2,7 @@
 type: learning-plan
 topic: behavior-cloning
 status: active
-current_gate: B0
+current_gate: B1
 started: 2026-08-02
 progress_mode: gate-based
 ---

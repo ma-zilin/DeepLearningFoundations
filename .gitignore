@@ -7,6 +7,7 @@ data/
 datasets/
 checkpoints/
 diffusion/outputs/
+BehaviorCloning/artifacts
 
 # Jupyter
 .ipynb_checkpoints/
