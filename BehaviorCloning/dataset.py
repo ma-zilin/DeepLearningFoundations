@@ -171,3 +171,92 @@ def save_expert_dataset(dataset: dict[str, np.ndarray], output_path: str | Path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     np.savez_compressed(output_path, **dataset)
     return output_path
+
+
+def split_episode_ids(
+    dataset: dict[str, np.ndarray],
+    seed: int = 1,
+    train_fraction: float = 0.70,
+    validation_fraction: float = 0.15,
+) -> dict[str, np.ndarray]:
+    """随机划分完整 episode，保证三个 split 互不重叠。"""
+    if train_fraction <= 0 or validation_fraction <= 0:
+        raise ValueError("train 和 validation 比例必须大于 0")
+    if train_fraction + validation_fraction >= 1:
+        raise ValueError("必须为 test split 保留正比例")
+
+    episode_ids = np.unique(dataset["episode_id"])
+    if len(episode_ids) < 3:
+        raise ValueError("至少需要 3 个 episode 才能划分三个 split")
+
+    shuffled_ids = np.random.default_rng(seed).permutation(episode_ids)
+    num_train = int(len(episode_ids) * train_fraction)
+    num_validation = int(len(episode_ids) * validation_fraction)
+    if num_train == 0 or num_validation == 0:
+        raise ValueError("episode 数过少，无法满足当前划分比例")
+
+    splits = {
+        "train": np.sort(shuffled_ids[:num_train]),
+        "validation": np.sort(
+            shuffled_ids[num_train : num_train + num_validation]
+        ),
+        "test": np.sort(shuffled_ids[num_train + num_validation :]),
+    }
+    _validate_episode_splits(episode_ids, splits)
+    return splits
+
+
+def _validate_episode_splits(
+    all_episode_ids: np.ndarray,
+    splits: dict[str, np.ndarray],
+) -> None:
+    """检查 split 是否互斥，并且完整覆盖原始 episode。"""
+    split_names = ("train", "validation", "test")
+    for index, name in enumerate(split_names):
+        if len(splits[name]) == 0:
+            raise ValueError(f"{name} split 不能为空")
+        for other_name in split_names[index + 1 :]:
+            if np.intersect1d(splits[name], splits[other_name]).size:
+                raise ValueError(f"{name} 与 {other_name} 存在重复 episode")
+
+    combined_ids = np.sort(np.concatenate([splits[name] for name in split_names]))
+    if not np.array_equal(combined_ids, np.sort(all_episode_ids)):
+        raise ValueError("split 没有完整覆盖原始 episode")
+
+
+def select_episodes(
+    dataset: dict[str, np.ndarray],
+    episode_ids: np.ndarray,
+) -> dict[str, np.ndarray]:
+    """选出指定 episode 的全部 transition，并保持原有时间顺序。"""
+    mask = np.isin(dataset["episode_id"], episode_ids)
+    return {key: value[mask] for key, value in dataset.items()}
+
+
+def compute_normalization_statistics(
+    train_dataset: dict[str, np.ndarray],
+    minimum_std: float = 1e-6,
+) -> dict[str, np.ndarray]:
+    """只根据 train transition 计算逐维标准化统计量。"""
+    if minimum_std <= 0:
+        raise ValueError("minimum_std 必须大于 0")
+
+    observations = train_dataset["observation"].astype(np.float64)
+    actions = train_dataset["expert_action"].astype(np.float64)
+    if len(observations) == 0:
+        raise ValueError("train dataset 不能为空")
+
+    observation_mean = observations.mean(axis=0)
+    observation_std = observations.std(axis=0)
+    action_mean = actions.mean(axis=0)
+    action_std = actions.std(axis=0)
+
+    observation_std = np.where(observation_std < minimum_std, 1.0, observation_std)
+    action_std = np.where(action_std < minimum_std, 1.0, action_std)
+
+    return {
+        "observation_mean": observation_mean.astype(np.float32),
+        "observation_std": observation_std.astype(np.float32),
+        "action_mean": action_mean.astype(np.float32),
+        "action_std": action_std.astype(np.float32),
+    }
