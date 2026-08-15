@@ -1,9 +1,10 @@
 ---
 type: learning-plan
 topic: behavior-cloning
-status: active
-current_gate: B4
+status: complete
+current_gate: B6
 started: 2026-08-02
+completed: 2026-08-15
 progress_mode: gate-based
 ---
 
@@ -415,7 +416,7 @@ $$
 1. Diffusion Policy 为什么仍属于 behavior cloning / imitation learning？
 2. 哪些变量被加噪，哪些变量只作为条件？
 3. 为什么单步 MSE 在多种动作都合理时可能输出平均动作？
-4. action horizon、prediction horizon 和 execution horizon 分别控制什么？
+4. observation horizon、prediction horizon 和 action/execution horizon 分别控制什么？
 5. 为什么生成更复杂的动作分布仍不能自动消除 covariate shift？
 6. 为什么 Diffusion Policy 的 validation loss 也不能替代闭环成功率？
 

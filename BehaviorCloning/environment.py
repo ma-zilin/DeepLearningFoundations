@@ -78,6 +78,25 @@ class PointMassEnv:
         self.done = False
         return self._observation()
 
+    def perturb_state(
+        self,
+        position_delta: float = 0.0,
+        velocity_delta: float = 0.0,
+    ) -> np.ndarray:
+        """在 episode 中对位置或速度施加一次外部扰动。"""
+        if self.done:
+            raise RuntimeError("episode 已结束，不能施加状态扰动")
+        if not np.isfinite(position_delta) or not np.isfinite(velocity_delta):
+            raise ValueError("状态扰动必须是有限数值")
+
+        next_velocity = self.v + float(velocity_delta)
+        if abs(next_velocity) > self.v_max:
+            raise ValueError("扰动后的速度不能超过环境的速度上限")
+
+        self.x += float(position_delta)
+        self.v = next_velocity
+        return self._observation()
+
     def step(self, action: float | np.ndarray) -> tuple[np.ndarray, bool, dict[str, Any]]:
         """执行一个加速度动作，返回下一观测、终止标记和终止详情。"""
         if self.done:
