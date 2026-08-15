@@ -63,6 +63,21 @@ class PointMassEnv:
         self.done = False
         return self._observation()
 
+    def reset_to(self, observation: np.ndarray) -> np.ndarray:
+        """从指定的 ``[x, v, x_goal]`` 开始新 episode。"""
+        observation_array = np.asarray(observation, dtype=np.float64)
+        if observation_array.shape != (3,):
+            raise ValueError("observation 的形状必须是 (3,)")
+        if not np.all(np.isfinite(observation_array)):
+            raise ValueError("observation 必须只包含有限数值")
+        if abs(float(observation_array[1])) > self.v_max:
+            raise ValueError("初始速度不能超过环境的速度上限")
+
+        self.x, self.v, self.x_goal = map(float, observation_array)
+        self.step_count = 0
+        self.done = False
+        return self._observation()
+
     def step(self, action: float | np.ndarray) -> tuple[np.ndarray, bool, dict[str, Any]]:
         """执行一个加速度动作，返回下一观测、终止标记和终止详情。"""
         if self.done:
