@@ -1,0 +1,63 @@
+{
+  "splits": {
+    "train": {
+      "size": 8192,
+      "target_seed": 0,
+      "path_seed": 1
+    },
+    "validation": {
+      "size": 2048,
+      "target_seed": 2,
+      "path_seed": 3
+    }
+  },
+  "centers": [
+    [
+      [
+        -2.0,
+        0.0
+      ],
+      [
+        2.0,
+        0.0
+      ]
+    ],
+    [
+      [
+        0.0,
+        -2.0
+      ],
+      [
+        0.0,
+        2.0
+      ]
+    ]
+  ],
+  "peak_std": 0.3,
+  "condition_probabilities": [
+    0.5,
+    0.5
+  ],
+  "mode_probabilities_within_condition": [
+    0.5,
+    0.5
+  ],
+  "source": "Independent standard 2D Gaussian",
+  "time": "Independent Uniform[0, 1), one scalar per sample",
+  "train_usage": "F1 path snapshot; resample x0 and t during F2 training",
+  "validation_usage": "Keep x1, c, x0 and t fixed across checkpoint evaluations",
+  "network_input_columns": [
+    "x",
+    "y",
+    "t",
+    "c0",
+    "c1"
+  ],
+  "sanity_check_tolerances": {
+    "condition_fraction_error": 0.04,
+    "mode_fraction_error": 0.07,
+    "center_coordinate_error": 0.06,
+    "std_coordinate_error": 0.04
+  },
+  "torch_version": "2.9.1+cu130"
+}

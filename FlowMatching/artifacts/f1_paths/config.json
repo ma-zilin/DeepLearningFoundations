@@ -1,0 +1,23 @@
+{
+  "description": "Independent-pair training paths; no trained model or ODE rollout",
+  "samples": 2048,
+  "data_seed": 0,
+  "path_seed": 1,
+  "condition_counts": [
+    1006,
+    1042
+  ],
+  "times": [
+    0.0,
+    0.25,
+    0.5,
+    0.75,
+    1.0
+  ],
+  "pairs_per_condition": 12,
+  "arrow_displacement_dt": 0.2,
+  "axis_limit": 4.245513010025024,
+  "endpoint_checks_passed": true,
+  "torch_version": "2.9.1+cu130",
+  "matplotlib_version": "3.10.9"
+}
