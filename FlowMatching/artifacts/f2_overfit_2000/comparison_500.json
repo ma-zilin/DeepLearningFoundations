@@ -1,0 +1,17 @@
+{
+  "reference_directory": "FlowMatching/artifacts/f2_overfit",
+  "changed_configuration_fields": [
+    "updates"
+  ],
+  "reference_updates": 500,
+  "new_updates": 2000,
+  "original_artifacts_unchanged": true,
+  "fixed_batch_tensors_identical": true,
+  "loss_max_absolute_difference_steps_0_through_500": 0.0,
+  "gradient_l2_max_absolute_difference_steps_0_through_499": 0.0,
+  "first_step_below_original_loss_threshold": 916,
+  "original_loss_threshold": 0.07525906562805176,
+  "checkpoint_reloaded_loss": 2.8015955422233674e-07,
+  "checkpoint_reloaded_loss_matches": true,
+  "conclusion": "The same fixed supervision reaches the preset threshold with the larger budget; no generalization or generation claim."
+}

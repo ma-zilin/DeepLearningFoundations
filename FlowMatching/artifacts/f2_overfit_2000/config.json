@@ -1,0 +1,34 @@
+{
+  "description": "Fixed-supervision diagnostic, not generalization or generation evaluation",
+  "data_file": "FlowMatching/artifacts/f1_data/train.pt",
+  "data_sha256": "88de539bdedde1bb69d9e7d86c943c93ec4fafaa062e62d8590e213792e1fc40",
+  "selection": "first 32 rows, indices 0 through 31",
+  "fixed_batch_sha256": "a8308bfae99496a067138f21fc2775d1decc6ac9fe397a23cbc96735435d2280",
+  "model": "VelocityMLP: 5 -> 64 -> 64 -> 2; ReLU hidden layers; linear output",
+  "model_seed": 0,
+  "batch_size": 32,
+  "optimizer": "Adam",
+  "learning_rate": 0.001,
+  "optimizer_defaults": {
+    "lr": 0.001,
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-08,
+    "weight_decay": 0,
+    "amsgrad": false,
+    "maximize": false,
+    "foreach": null,
+    "capturable": false,
+    "differentiable": false,
+    "fused": null,
+    "decoupled_weight_decay": false
+  },
+  "updates": 2000,
+  "loss": "mean over samples of sum over two velocity components of squared error",
+  "max_final_to_initial_loss_ratio": 0.01,
+  "device": "cpu",
+  "torch_num_threads": 1,
+  "torch_version": "2.9.1+cu130"
+}

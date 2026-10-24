@@ -1,0 +1,55 @@
+{
+  "description": "Resampled-path velocity training with fixed validation supervision",
+  "model": "VelocityMLP: 5 -> 64 -> 64 -> 2; ReLU hidden layers; linear output",
+  "model_seed": 0,
+  "index_seed": 4,
+  "path_seed": 5,
+  "target_sampling": "Uniform indices with replacement from training x1 and corresponding c",
+  "path_sampling": "New independent Gaussian x0 and uniform t on every update",
+  "train_samples": 8192,
+  "validation_samples": 2048,
+  "data_seeds": {
+    "train": {
+      "size": 8192,
+      "target_seed": 0,
+      "path_seed": 1
+    },
+    "validation": {
+      "size": 2048,
+      "target_seed": 2,
+      "path_seed": 3
+    }
+  },
+  "data_sha256": {
+    "train.pt": "88de539bdedde1bb69d9e7d86c943c93ec4fafaa062e62d8590e213792e1fc40",
+    "validation.pt": "64d82d92650c292604d499ef70059fa3ee402bc8cbc00a783d09c97b7c19cea7"
+  },
+  "validation_sha256": "3483de14ed16ecb785358ade8edf4aaf85b2a834d429c110f59b7173f25a2ae2",
+  "batch_size": 256,
+  "updates": 2000,
+  "eval_every": 100,
+  "optimizer": "Adam",
+  "learning_rate": 0.001,
+  "optimizer_defaults": {
+    "lr": 0.001,
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-08,
+    "weight_decay": 0,
+    "amsgrad": false,
+    "maximize": false,
+    "foreach": null,
+    "capturable": false,
+    "differentiable": false,
+    "fused": null,
+    "decoupled_weight_decay": false
+  },
+  "loss": "mean over samples of sum over two velocity components of squared error",
+  "train_log": "Loss and gradient before each named update; validation after completed updates",
+  "acceptance": "Final fixed-validation loss below both zero-velocity and untrained-network losses; finite numerics",
+  "device": "cpu",
+  "torch_num_threads": 1,
+  "torch_version": "2.9.1+cu130"
+}

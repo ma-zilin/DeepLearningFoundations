@@ -1,0 +1,23 @@
+{
+  "train_rows": 2000,
+  "validation_rows": 21,
+  "training_source_files_unchanged": true,
+  "zero_baseline_numpy_float64": 6.079493225397593,
+  "untrained_baseline_reproduced": true,
+  "checkpoints": {
+    "best": {
+      "step": 1800,
+      "reloaded_validation_loss": 2.9823946952819824,
+      "numpy_float64_validation_loss": 2.9823947055007665,
+      "optimizer_and_rng_states_loadable": true,
+      "evaluation_preserves_parameters_mode_and_rng": true
+    },
+    "last": {
+      "step": 2000,
+      "reloaded_validation_loss": 2.989851236343384,
+      "numpy_float64_validation_loss": 2.9898510082012755,
+      "optimizer_and_rng_states_loadable": true,
+      "evaluation_preserves_parameters_mode_and_rng": true
+    }
+  }
+}

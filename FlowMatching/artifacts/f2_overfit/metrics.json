@@ -1,0 +1,42 @@
+{
+  "passed": false,
+  "initial_loss": 7.525906562805176,
+  "final_loss": 0.8851529955863953,
+  "final_to_initial_loss_ratio": 0.11761413567915291,
+  "best_loss": 0.8851529955863953,
+  "completed_updates": 500,
+  "all_predictions_losses_gradients_parameters_finite": true,
+  "fixed_batch_unchanged": true,
+  "parameter_gradient_norms": {
+    "net.0.weight": {
+      "min": 0.3184876967093427,
+      "max": 1.355931059543393,
+      "last": 0.7694059903540362
+    },
+    "net.0.bias": {
+      "min": 0.11082208159183725,
+      "max": 1.1721303352339356,
+      "last": 0.6556307563561836
+    },
+    "net.2.weight": {
+      "min": 0.2610961317264261,
+      "max": 1.1908627715747924,
+      "last": 0.5799121467089199
+    },
+    "net.2.bias": {
+      "min": 0.057567543862682174,
+      "max": 0.2517970555912952,
+      "last": 0.15931983148628315
+    },
+    "net.4.weight": {
+      "min": 0.21765503205669207,
+      "max": 1.4092086846178853,
+      "last": 0.30980192187522587
+    },
+    "net.4.bias": {
+      "min": 0.0009931717440674586,
+      "max": 0.3213528376474409,
+      "last": 0.04378942701778021
+    }
+  }
+}

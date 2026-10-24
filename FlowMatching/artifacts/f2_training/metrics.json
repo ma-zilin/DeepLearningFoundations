@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "zero_velocity_validation_loss": 6.079493045806885,
+  "untrained_validation_loss": 6.133722305297852,
+  "best_validation_loss": 2.9823946952819824,
+  "best_step": 1800,
+  "final_validation_loss": 2.989851236343384,
+  "completed_updates": 2000,
+  "all_predictions_losses_gradients_parameters_finite": true,
+  "validation_unchanged": true,
+  "gradient_l2": {
+    "min": 0.772070746933265,
+    "max": 4.233304554950455,
+    "last": 2.473861096822548
+  },
+  "scope": "One training seed; velocity prediction on fixed validation data, not generation quality"
+}
