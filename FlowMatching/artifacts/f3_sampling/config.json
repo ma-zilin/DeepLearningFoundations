@@ -1,0 +1,26 @@
+{
+  "checkpoint": "FlowMatching/artifacts/f2_training/best.pt",
+  "checkpoint_sha256": "c539889269d9ef9b879c6e4cb9e61bb9c06fee6cf2dd40d8cc26e1e9ad1d8371",
+  "checkpoint_step": 1800,
+  "seed": 6,
+  "samples_per_condition": 1024,
+  "num_steps": 100,
+  "step_size": 0.01,
+  "conditions": [
+    0,
+    1
+  ],
+  "source": "New standard 2D Gaussian, shared between conditions",
+  "method": "Forward Euler, t=j/N, j=0,...,N-1",
+  "network_input_columns": [
+    "x",
+    "y",
+    "t",
+    "c0",
+    "c1"
+  ],
+  "device": "cpu",
+  "dtype": "torch.float32",
+  "torch_num_threads": 1,
+  "torch_version": "2.9.1+cu130"
+}

@@ -1,0 +1,204 @@
+{
+  "step_sensitivity": [
+    {
+      "seed": 0,
+      "condition": 0,
+      "steps": 10,
+      "reference_steps": 100,
+      "mean_endpoint_distance": 0.10606278934111746,
+      "max_endpoint_distance": 1.0622312164468606
+    },
+    {
+      "seed": 0,
+      "condition": 1,
+      "steps": 10,
+      "reference_steps": 100,
+      "mean_endpoint_distance": 0.10305962799438492,
+      "max_endpoint_distance": 0.873886229020443
+    },
+    {
+      "seed": 0,
+      "condition": 0,
+      "steps": 50,
+      "reference_steps": 100,
+      "mean_endpoint_distance": 0.011491080687377815,
+      "max_endpoint_distance": 0.22850526962184695
+    },
+    {
+      "seed": 0,
+      "condition": 1,
+      "steps": 50,
+      "reference_steps": 100,
+      "mean_endpoint_distance": 0.010658822537437279,
+      "max_endpoint_distance": 0.1342594680744589
+    },
+    {
+      "seed": 0,
+      "condition": 0,
+      "steps": 100,
+      "reference_steps": 100,
+      "mean_endpoint_distance": 0.0,
+      "max_endpoint_distance": 0.0
+    },
+    {
+      "seed": 0,
+      "condition": 1,
+      "steps": 100,
+      "reference_steps": 100,
+      "mean_endpoint_distance": 0.0,
+      "max_endpoint_distance": 0.0
+    },
+    {
+      "seed": 1,
+      "condition": 0,
+      "steps": 10,
+      "reference_steps": 100,
+      "mean_endpoint_distance": 0.10418390867530213,
+      "max_endpoint_distance": 1.116784742091316
+    },
+    {
+      "seed": 1,
+      "condition": 1,
+      "steps": 10,
+      "reference_steps": 100,
+      "mean_endpoint_distance": 0.09880893121424006,
+      "max_endpoint_distance": 0.8447457628471511
+    },
+    {
+      "seed": 1,
+      "condition": 0,
+      "steps": 50,
+      "reference_steps": 100,
+      "mean_endpoint_distance": 0.010983244131603134,
+      "max_endpoint_distance": 0.2234764970080322
+    },
+    {
+      "seed": 1,
+      "condition": 1,
+      "steps": 50,
+      "reference_steps": 100,
+      "mean_endpoint_distance": 0.010088393197011155,
+      "max_endpoint_distance": 0.1261394741956282
+    },
+    {
+      "seed": 1,
+      "condition": 0,
+      "steps": 100,
+      "reference_steps": 100,
+      "mean_endpoint_distance": 0.0,
+      "max_endpoint_distance": 0.0
+    },
+    {
+      "seed": 1,
+      "condition": 1,
+      "steps": 100,
+      "reference_steps": 100,
+      "mean_endpoint_distance": 0.0,
+      "max_endpoint_distance": 0.0
+    },
+    {
+      "seed": 2,
+      "condition": 0,
+      "steps": 10,
+      "reference_steps": 100,
+      "mean_endpoint_distance": 0.10351227261042512,
+      "max_endpoint_distance": 1.0974843076932737
+    },
+    {
+      "seed": 2,
+      "condition": 1,
+      "steps": 10,
+      "reference_steps": 100,
+      "mean_endpoint_distance": 0.09962086990412386,
+      "max_endpoint_distance": 0.8114290056659571
+    },
+    {
+      "seed": 2,
+      "condition": 0,
+      "steps": 50,
+      "reference_steps": 100,
+      "mean_endpoint_distance": 0.010962277954663327,
+      "max_endpoint_distance": 0.2234988966971098
+    },
+    {
+      "seed": 2,
+      "condition": 1,
+      "steps": 50,
+      "reference_steps": 100,
+      "mean_endpoint_distance": 0.010396925551989365,
+      "max_endpoint_distance": 0.136745558014673
+    },
+    {
+      "seed": 2,
+      "condition": 0,
+      "steps": 100,
+      "reference_steps": 100,
+      "mean_endpoint_distance": 0.0,
+      "max_endpoint_distance": 0.0
+    },
+    {
+      "seed": 2,
+      "condition": 1,
+      "steps": 100,
+      "reference_steps": 100,
+      "mean_endpoint_distance": 0.0,
+      "max_endpoint_distance": 0.0
+    }
+  ],
+  "condition_switch": [
+    {
+      "seed": 0,
+      "steps": 10,
+      "mean_endpoint_displacement_switching_c": 2.4276538632660403,
+      "note": "Displacement alone does not establish conditional quality; use both conditions' metrics"
+    },
+    {
+      "seed": 0,
+      "steps": 50,
+      "mean_endpoint_displacement_switching_c": 2.498154384915745,
+      "note": "Displacement alone does not establish conditional quality; use both conditions' metrics"
+    },
+    {
+      "seed": 0,
+      "steps": 100,
+      "mean_endpoint_displacement_switching_c": 2.5061732931639593,
+      "note": "Displacement alone does not establish conditional quality; use both conditions' metrics"
+    },
+    {
+      "seed": 1,
+      "steps": 10,
+      "mean_endpoint_displacement_switching_c": 2.436483764583622,
+      "note": "Displacement alone does not establish conditional quality; use both conditions' metrics"
+    },
+    {
+      "seed": 1,
+      "steps": 50,
+      "mean_endpoint_displacement_switching_c": 2.5059990067478206,
+      "note": "Displacement alone does not establish conditional quality; use both conditions' metrics"
+    },
+    {
+      "seed": 1,
+      "steps": 100,
+      "mean_endpoint_displacement_switching_c": 2.5137681811923707,
+      "note": "Displacement alone does not establish conditional quality; use both conditions' metrics"
+    },
+    {
+      "seed": 2,
+      "steps": 10,
+      "mean_endpoint_displacement_switching_c": 2.4314523804233823,
+      "note": "Displacement alone does not establish conditional quality; use both conditions' metrics"
+    },
+    {
+      "seed": 2,
+      "steps": 50,
+      "mean_endpoint_displacement_switching_c": 2.5003364232162504,
+      "note": "Displacement alone does not establish conditional quality; use both conditions' metrics"
+    },
+    {
+      "seed": 2,
+      "steps": 100,
+      "mean_endpoint_displacement_switching_c": 2.508146842796873,
+      "note": "Displacement alone does not establish conditional quality; use both conditions' metrics"
+    }
+  ]
+}

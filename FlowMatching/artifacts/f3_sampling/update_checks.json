@@ -1,0 +1,11 @@
+{
+  "new_noise_matches_recorded_seed": true,
+  "same_initial_noise_for_both_conditions": true,
+  "checked_update_indices_per_condition": [
+    0,
+    49,
+    99
+  ],
+  "euler_update_max_absolute_error": 0.0,
+  "model_parameter_gradients_absent": true
+}

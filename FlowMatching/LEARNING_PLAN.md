@@ -2,9 +2,9 @@
 type: learning-plan
 topic: conditional-flow-matching
 status: active
-current_gate: F3
+current_gate: F5
 created: 2026-10-13
-updated: 2026-10-24
+updated: 2026-10-25
 progress_mode: gate-based
 ---
 
@@ -214,8 +214,11 @@ FlowMatching/
 ├── model.py          # 时间/任务条件速度 MLP
 ├── diagnose_overfit.py # 固定监督诊断及 500/2000 步预算对照
 ├── train.py          # 重采样路径训练、固定验证与 checkpoint 保存
-├── sample.py         # 待 F3 创建：Euler 积分与采样
-├── evaluate.py       # 待后续创建：分布与步数比较
+├── sample.py         # Euler 积分、解析自检、模型采样与新进程复现
+├── visualize_samples.py # 模型生成的时间切片、终点与轨迹图
+├── evaluate.py       # 固定 checkpoint 的条件分布与步数评估
+├── visualize_evaluation.py # 全部采样 seed 的终点、轨迹和质量—成本图
+├── test_evaluate.py  # 分布指标的反例与边界检查
 └── artifacts/        # 小型图表、配置、指标；数据张量仅保留本地
 ```
 
@@ -226,19 +229,21 @@ FlowMatching/
 - [x] F0：定位与全局地图——已完成概念学习与对话理解检查。
 - [x] F1：数据、路径与速度标签——实现、运行检查及本阶段理解验收完成。
 - [x] F2：速度网络与训练闭环——固定监督诊断、正式训练/验证与机制检查完成；范围为单训练 seed 的二维速度回归。
-- [ ] F3：Euler 积分与新噪声生成——已定位介绍，待正式进入许可。
-- [ ] F4：条件有效性与步数—质量权衡
-- [ ] F5：二维 DDPM 对照与证据边界
+- [x] F3：Euler 积分与新噪声生成——解析自检、固定条件模型采样、新进程复现及本阶段机制检查完成。
+- [x] F4：条件有效性与步数—质量权衡——18 组固定 checkpoint 评估、指标独立复算及本阶段结果解释检查完成；保留全部失败配置。
+- [ ] F5：二维 DDPM 对照与证据边界——已定位介绍，待正式进入许可。
 - [ ] F6：动作生成映射与阶段收尾
 
-F0–F2 已按本阶段范围完成验收。下一入口为 F3，已完成价值、位置、前置与出口介绍，尚未获得正式进入许可；未创建采样器或运行模型生成。
+F0–F4 已按本阶段范围完成，范围为单训练 checkpoint 的二维条件生成及有界采样评估。下一入口为 F5，已介绍价值、范围、前置与出口，尚未获得正式进入许可；未开展 F5 的 DDPM 对照或 F6 动作生成映射。阶段完成不代表所有步数均通过质量阈值，也不代表已独立实现代码或证明完整分布匹配。
 
-### 理解记录与验收边界（更新于 2026-10-24）
+### 理解记录与验收边界（更新于 2026-10-25）
 
 - F0 对话中已能说明：用端点构造训练路径，网络从中间位置、时间和任务条件预测速度，生成时由采样器沿预测速度场积分；生成时没有指定终点。已区分路径条件与任务条件，以及单条配对的恒定速度和模型速度场。
 - F1 对话中已显示理解：随机时间用于选择路径上的训练点；任务编号可改成独热表示；固定任务条件和峰编号后目标为单峰，混合峰编号后的总体仍为双峰。最终已能说明训练/验证保持双峰参数一致，并分别采样目标端点、起点和时间。
 - F1 收尾已澄清 B 表示 batch 内样本数、时间每样本一个标量、二维向量每样本两个分量，以及 t 的 [B,1] 广播。随后能独立说明：8 个样本每行输入位置、时间和任务独热编码，形状为 [8,5]，速度标签为 [8,2]；结合此前数据来源和路径复述，F1 理解验收完成。
 - F2 通过具体重叠路径例子检查：能指出相同位置、时间和任务条件下，网络缺少端点配对信息；在向右标签更常见的不等权变式中，能判断理想预测偏向右。已讲解 MSE 的条件平均速度与不可消除的条件方差，完成本阶段机制检查，不声明已经独立推导相关定理。
+- F3 对话中已能说明：采样过程中位置和时间变化，任务标签保持固定。已纠正“多次更新就必然弯曲”的说法，解释沿轨迹变化的速度方向与曲线运动的联系；网络参数在采样中固定。解析常量速度检查仅验证积分器，不构成生成质量证据。
+- F4 对话中已能指出：峰比例不足以判断分布正确，还需检查中心和离散程度；正确峰中心处的塌缩应由标准差识别。对继续增加到 1000 步是否保证更好的问题，已能判断没有这种保证。速度场偏差与积分误差的机制区别已讲解，尚未进行独立误差分解或精确 ODE 参考实验。
 - 机制理解、程序运行和代码独立实现分别判断。当前代码由助手按明确请求实现；不把数值通过认定为已独立实现或精读全部源码，也不把验证 loss 改善认定为生成质量通过。
 
 ### F1 实现与运行证据（2026-10-22）
@@ -274,7 +279,7 @@ python -m FlowMatching.prepare_data
 python -m FlowMatching.visualize_paths
 ```
 
-当前运行环境为 Python 3.10、PyTorch 2.9.1+cu130、Matplotlib 3.10.9，F1 构造与检查在 CPU 执行。本阶段未安装新依赖；F2 已完成下述有界训练，尚未运行 ODE 模型采样。
+运行环境为 Python 3.10、PyTorch 2.9.1+cu130、Matplotlib 3.10.9，F1 构造与检查在 CPU 执行。本阶段未安装新依赖；F2 有界训练、F3 模型采样及 F4 分布评测的后续证据分别记录于下文。
 
 ### F2 实现与运行证据（2026-10-24）
 
@@ -307,7 +312,7 @@ python -m FlowMatching.visualize_paths
 - [配置与 seeds](artifacts/f2_training/config.json)、[结果](artifacts/f2_training/metrics.json)、[加载与独立复算记录](artifacts/f2_training/reload_checks.json)、[训练/验证曲线](artifacts/f2_training/loss.png)、[训练日志](artifacts/f2_training/train.csv)、[验证日志](artifacts/f2_training/validation.csv)。
 - 诊断权重、固定 batch、正式训练的 `best.pt` 与 `last.pt` 均按 `*.pt` 规则留在本地，不提交。正式采样计划使用本地 `artifacts/f2_training/best.pt`。
 
-证据范围：当前只支持这组二维配置、单个训练 seed 的固定监督拟合与固定验证速度误差改善。当前约 3 的验证 loss 尚未分解为条件方差与模型误差；未完成模型积分生成、分布质量评测、采样步数比较或机器人实验。
+F2 证据范围：本节只支持这组二维配置、单个训练 seed 的固定监督拟合与固定验证速度误差改善。约 3 的验证 loss 尚未分解为条件方差与模型误差；模型积分生成、分布质量评测和步数比较的后续证据见 F3/F4 记录，仍未开展机器人实验。
 
 复现命令（仓库根目录，已有 `dl-foundations` 环境）：
 
@@ -318,3 +323,53 @@ python -m FlowMatching.train
 ```
 
 默认 500 步诊断未达预设门槛时返回非零退出码，并保存结果，这是诊断结论。上述命令会分别运行对应训练，进度整理无需重新执行它们。
+
+### F3 实现与运行证据（2026-10-25）
+
+- [采样器](sample.py) 的 `euler_integrate` 从 t=0 到 t=1 执行 N 次欧拉更新，每次以当前位置、t=j/N 和固定任务条件查询速度，返回形状 [N+1,B,2] 的完整轨迹。模型生成使用 eval 和无梯度模式，不读取训练目标端点。
+- 解析常量速度自检：起点 (0,1)、速度 (2,-1)，终点应为 (2,0)。N=10、20 的完整轨迹最大绝对误差分别约为 2.38×10⁻⁷、3.58×10⁻⁷，均低于预设 10⁻⁶；时间网格、调用次数、固定条件及输入保留检查通过。
+- 使用 F2 的 `best.pt`（step=1800），CPU 单线程、float32、采样 seed=6、N=100。两种条件共用 1024 个新高斯起点，各自完整轨迹形状 [101,1024,2]；位置有限、起点和模型参数不变、条件固定、无梯度检查通过。
+- 新进程重载同一权重与 seed 后，起点、时间和两种条件的完整轨迹逐元素一致，最大差为 0；另检查两种条件第 0、49、99 次欧拉更新，最大绝对差为 0。
+- [绘图工具](visualize_samples.py) 已保存时间切片、全部终点及固定前 16 个样本的轨迹；这些图展示网络生成，不是人为配对的训练路径。
+
+证据：[解析自检](artifacts/f3_euler_checks/checks.json)、[生成配置](artifacts/f3_sampling/config.json)、[生成检查](artifacts/f3_sampling/checks.json)、[新进程复现](artifacts/f3_sampling/reproduction.json)、[更新公式核查](artifacts/f3_sampling/update_checks.json)、[时间切片](artifacts/f3_sampling/time_slices.png)、[终点图](artifacts/f3_sampling/endpoints.png)、[轨迹图](artifacts/f3_sampling/trajectories.png)。
+
+F3 验证生成机制与可复现性；单个采样 seed 的图像观察不代替下述 F4 定量质量评测。本地 `samples.pt` 遵守忽略规则，不提交。
+
+### F4 实现与运行证据（2026-10-25）
+
+[评估脚本](evaluate.py) 复用 F3 的 `sample_model`，固定同一个 step=1800 checkpoint，不更新参数。正式采样前先写入协议和阈值：每种条件 4096 个样本，采样 seeds=0、1、2，Euler N=10、50、100，共 18 组配置；同一 seed 的起点在不同 N 和 c 之间共享。
+
+预声明质量阈值：各区域比例 0.40–0.60，各区域均值到对应峰中心的欧氏距离 ≤0.30，各区域每个坐标的样本标准差为 0.15–0.55，整体非主轴均值的绝对值 ≤0.15，距离最近目标中心 >0.90 的样本比例 ≤5%。按 x 或 y 的符号分区，所有终点均保留；区域不足两个样本时标准差记为未定义，该配置失败。标准差逐峰逐坐标检查，与历史 DDPM 仅检查四个标准差平均值的规则不同。
+
+计时使用 CPU 单线程、float32；每组预热一次、计时三次，取中位数。范围覆盖当前 `sample_model` 的输入检查、条件编码、网络、欧拉更新及轨迹在内存中的复制和堆叠，排除权重加载、起点构造、指标计算、绘图、磁盘写入和调用次数 hook；每次网络前向处理整个 batch，调用次数等于 N。下表耗时是每个 seed 的三次中位数再跨三个 seed 取中位数。
+
+| 条件 | 步数 / 网络调用次数 | 通过的采样 seeds | 每批 4096 样本耗时（ms） | 最大远离比例 |
+| --- | ---: | ---: | ---: | ---: |
+| 水平 c=0 | 10 | 0/3 | 5.34 | 7.23% |
+| 水平 c=0 | 50 | 2/3 | 26.52 | 5.05% |
+| 水平 c=0 | 100 | 3/3 | 53.64 | 4.96% |
+| 竖直 c=1 | 10 | 2/3 | 5.40 | 5.35% |
+| 竖直 c=1 | 50 | 3/3 | 26.60 | 3.66% |
+| 竖直 c=1 | 100 | 3/3 | 52.45 | 3.59% |
+
+- 13/18 组满足全部预设阈值。五组失败全部来自远离比例超标，保留原结果，未按结果修改阈值。100 步下两种条件均通过三个采样 seed，但水平条件最差 4.96% 仍接近 5% 边界，图中也仍有峰间残留点。
+- N=50 相比 N=100 耗时约减半；与同起点 N=100 的终点平均距离约为 0.01，而 N=10 约为 0.10。N=100 不是精确解，不能把这些距离当成对精确 ODE 解的误差。
+- 质量指标未全部随步数单调改善：竖直条件最差中心误差在 50/100 步时为 0.0405/0.0498。少步到多步的结果变化不能解释为模型参数学得更好。
+- 首个 seed 的部分配置计时偏高，原始三次计时与 seed 间范围均保留，原因未定位；未删除或重测这些数据。
+- [8 项指标反例及边界检查](test_evaluate.py) 通过，覆盖峰塌缩、模式缺失、小区域、各坐标标准差单独判定、错误中心、非主轴偏移、分区与半径边界及非有限值。
+- NumPy float64 独立复算 18 组指标：288 项数值最大绝对差约为 7.2×10⁻¹⁶，通过/失败原因、CSV/JSON 及计时中位数一致。新进程按配置重建全部 18 组起点和完整轨迹，逐元素一致，全部质量指标及配对比较一致；不要求墙钟耗时逐值复现。
+
+证据：[预声明协议与阈值](artifacts/f4_evaluation/config.json)、[逐组指标 CSV](artifacts/f4_evaluation/metrics.csv)、[完整指标及汇总](artifacts/f4_evaluation/metrics.json)、[执行检查](artifacts/f4_evaluation/checks.json)、[独立复算](artifacts/f4_evaluation/independent_checks.json)、[新进程复现](artifacts/f4_evaluation/reproduction.json)、[同起点配对比较](artifacts/f4_evaluation/paired_comparisons.json)、[汇总表](artifacts/f4_evaluation/summary.md)、[运行观察](artifacts/f4_evaluation/observations.md)、[质量—成本图](artifacts/f4_evaluation/quality_cost.png)、[seed=0 终点对照](artifacts/f4_evaluation/endpoints_seed0.png)。其余 seeds 的终点和轨迹图保存在同目录。
+
+证据范围：固定单训练 checkpoint、三个采样 seed 的二维条件生成及积分步数权衡；满足本项目教学阈值不等于完整分布精确匹配，也不保证增加步数必然改善每项指标。未开展多训练 seed、精确 ODE 参考、DDPM 方法排名或机器人验证。完整轨迹 `samples_seed*.pt` 仅保留本地，代码、图表及小型记录可提交。
+
+只复核已有产物的命令（仓库根目录，已有 `dl-foundations` 环境；不训练，不重复计时）：
+
+```bash
+python -m FlowMatching.test_evaluate
+python -m FlowMatching.sample --verify FlowMatching/artifacts/f3_sampling
+python -m FlowMatching.evaluate --verify FlowMatching/artifacts/f4_evaluation
+```
+
+上述复现需要本地忽略的权重与轨迹文件。若后续明确授权重新运行完整 F4 实验，应使用 `python -m FlowMatching.evaluate --output-dir <新的结果目录>`；评估脚本拒绝覆盖已存在的结果目录。此次进度整理不重新训练或重新运行实验。

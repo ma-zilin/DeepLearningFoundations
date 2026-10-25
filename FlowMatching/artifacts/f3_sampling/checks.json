@@ -1,0 +1,23 @@
+{
+  "checkpoint_step": 1800,
+  "checkpoint_validation_loss": 2.9823946952819824,
+  "trajectory_shapes": {
+    "c0": [
+      101,
+      1024,
+      2
+    ],
+    "c1": [
+      101,
+      1024,
+      2
+    ]
+  },
+  "all_positions_finite": true,
+  "same_initial_noise_for_both_conditions": true,
+  "initial_noise_unchanged": true,
+  "conditions_fixed": true,
+  "model_parameters_unchanged": true,
+  "model_eval_and_no_grad": true,
+  "scope": "Single-seed trajectory and point-cloud inspection, not F4 quantitative quality evaluation"
+}

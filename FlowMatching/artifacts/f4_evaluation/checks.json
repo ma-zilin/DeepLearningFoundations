@@ -1,0 +1,20 @@
+{
+  "execution_passed": true,
+  "configuration_count": 18,
+  "configurations_meeting_quality_thresholds": 13,
+  "protocol_saved_before_formal_noise": true,
+  "all_trajectories_finite": true,
+  "fixed_conditions": true,
+  "shared_initial_noise_for_steps_and_conditions": true,
+  "warmup_and_three_timed_trajectories_bitwise_equal": true,
+  "network_calls_match_steps": true,
+  "model_eval_and_no_grad": true,
+  "model_parameters_unchanged": true,
+  "global_rng_unchanged_during_sampling": true,
+  "checkpoint_and_source_hashes_unchanged": true,
+  "sample_files_sha256": {
+    "samples_seed0.pt": "8cde663ffe080e1df5b9192bb62071f936c35be70a98492ba1d3002b12f60fb6",
+    "samples_seed1.pt": "dbfc8da58ce027b7726b03785954feaf2bb4e79b59c8e6eb882441c4be1c94fe",
+    "samples_seed2.pt": "ec9f8ec5b25a32fc5069c7148d749b8c471cdbe81a481a408af72458ad9e441b"
+  }
+}

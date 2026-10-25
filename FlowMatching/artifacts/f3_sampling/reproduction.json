@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "checkpoint_sha256_matches": true,
+  "all_saved_tensors_bitwise_equal": true,
+  "maximum_absolute_differences": {
+    "x0": 0.0,
+    "times": 0.0,
+    "trajectory_c0": 0.0,
+    "trajectory_c1": 0.0
+  },
+  "torch_version": "2.9.1+cu130"
+}

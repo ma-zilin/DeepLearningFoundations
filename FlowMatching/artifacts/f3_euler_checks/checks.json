@@ -1,0 +1,76 @@
+{
+  "passed": true,
+  "scope": "Analytical constant-velocity integration only, not model generation quality",
+  "initial_position": [
+    [
+      0.0,
+      1.0
+    ]
+  ],
+  "constant_velocity": [
+    [
+      2.0,
+      -1.0
+    ]
+  ],
+  "expected_endpoint": [
+    [
+      2.0,
+      0.0
+    ]
+  ],
+  "time_interval": [
+    0.0,
+    1.0
+  ],
+  "absolute_tolerance": 1e-06,
+  "dtype": "torch.float32",
+  "device": "cpu",
+  "torch_version": "2.9.1+cu130",
+  "cases": [
+    {
+      "num_steps": 10,
+      "step_size": 0.1,
+      "trajectory_shape": [
+        11,
+        1,
+        2
+      ],
+      "velocity_calls": 10,
+      "final_position": [
+        [
+          2.000000238418579,
+          -7.450580596923828e-08
+        ]
+      ],
+      "max_trajectory_error": 2.384185791015625e-07,
+      "max_terminal_error": 2.384185791015625e-07,
+      "time_grid_checked": true,
+      "condition_fixed": true,
+      "gradient_disabled": true,
+      "inputs_unchanged": true
+    },
+    {
+      "num_steps": 20,
+      "step_size": 0.05,
+      "trajectory_shape": [
+        21,
+        1,
+        2
+      ],
+      "velocity_calls": 20,
+      "final_position": [
+        [
+          2.000000238418579,
+          -1.564621925354004e-07
+        ]
+      ],
+      "max_trajectory_error": 3.5762786865234375e-07,
+      "max_terminal_error": 2.384185791015625e-07,
+      "time_grid_checked": true,
+      "condition_fixed": true,
+      "gradient_disabled": true,
+      "inputs_unchanged": true
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "created_utc": "2026-10-25T12:07:27.618165+00:00",
+  "checkpoint": "FlowMatching/artifacts/f2_training/best.pt",
+  "checkpoint_sha256": "c539889269d9ef9b879c6e4cb9e61bb9c06fee6cf2dd40d8cc26e1e9ad1d8371",
+  "checkpoint_step": 1800,
+  "checkpoint_validation_loss": 2.9823946952819824,
+  "sampling_seeds": [
+    0,
+    1,
+    2
+  ],
+  "steps": [
+    10,
+    50,
+    100
+  ],
+  "conditions": [
+    0,
+    1
+  ],
+  "samples_per_condition": 4096,
+  "device": "cpu",
+  "dtype": "torch.float32",
+  "torch_num_threads": 1,
+  "torch_version": "2.9.1+cu130",
+  "python_version": "3.10.20",
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "cpu_model": "Intel(R) Core(TM) Ultra 9 275HX",
+  "warmup_runs_per_configuration": 1,
+  "timed_runs_per_configuration": 3,
+  "timing_clock": "time.perf_counter; median of three batch latencies",
+  "timing_includes": "sample_model: validation, condition encoding, network, Euler, trajectory clones/stack",
+  "timing_excludes": "model loading, noise/condition construction, call-count hook, comparisons, metrics, plots, disk I/O",
+  "network_calls": "Counted with a temporary forward hook during warmup; one batched call per Euler step",
+  "shared_noise": "One local CPU generator per seed; same x0 for all N and both conditions",
+  "method": "Forward Euler, t=j/N, j=0,...,N-1; eval and no_grad",
+  "target_centers": [
+    [
+      [
+        -2.0,
+        0.0
+      ],
+      [
+        2.0,
+        0.0
+      ]
+    ],
+    [
+      [
+        0.0,
+        -2.0
+      ],
+      [
+        0.0,
+        2.0
+      ]
+    ]
+  ],
+  "target_coordinate_std": 0.3,
+  "region_rule": "c=0: x<0 / x>=0; c=1: y<0 / y>=0; all endpoints retained",
+  "std_definition": "Sample standard deviation, correction=1; checked for each group and coordinate",
+  "undefined_rule": "Empty group: mean/error null; group size<2: std null; configuration fails",
+  "thresholds": {
+    "mode_ratio_min": 0.4,
+    "mode_ratio_max": 0.6,
+    "center_error_max": 0.3,
+    "coordinate_std_min": 0.15,
+    "coordinate_std_max": 0.55,
+    "abs_off_axis_mean_max": 0.15,
+    "nearest_center_radius": 0.9,
+    "outside_fraction_max": 0.05
+  },
+  "threshold_basis": "Predeclared teaching criteria using historical DDPM scale; not a paper benchmark",
+  "historical_difference": "Historical DDPM checked mean of four within-mode stds; here all four must pass",
+  "step_reference": "N=100 is a paired sensitivity reference, not exact ODE or target ground truth",
+  "scope": "Single trained checkpoint; three sampling seeds; no retraining or algorithm ranking",
+  "source_sha256": {
+    "evaluate.py": "cb2aa7594f725066cceef416daf3a65a9e907ffad1dfa79d632e91784af815c4",
+    "visualize_evaluation.py": "4a74d30370693e71494b0437dd3f284393cac770a9f3847ed98268229c0e99bf",
+    "sample.py": "8279fec705ae7551d63b6ceee66bdaa64d9d511077e17e2476d8db91dc216937",
+    "model.py": "480b5d3304a286a531c2fe23ee16abb69d8303aacb1f16a05a38eca54b419fde",
+    "conditioning.py": "d91a9e289228317e895e3e8d873b1e0b4b73ef7d6de0a7848b31d5d47d9745ef",
+    "data.py": "69deaa4bfbdb8a97621e238e6607bdb93f8c362a068d0b87828aa67c7e3058b6"
+  }
+}

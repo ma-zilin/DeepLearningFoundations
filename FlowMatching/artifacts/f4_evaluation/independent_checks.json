@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "method": "Independent NumPy float64 implementation; ddof=1; all endpoints retained; no imports of evaluator metric code",
+  "configurations_checked": 18,
+  "numeric_comparisons": 288,
+  "maximum_absolute_metric_difference": 7.216449660063518e-16,
+  "all_failure_reasons_and_quality_decisions_match": true,
+  "all_noise_origins_match": true,
+  "csv_matches_json": true,
+  "all_raw_timing_counts_and_medians_checked": true,
+  "numpy_version": "2.2.6",
+  "metric_unit_checks": "python -B -m FlowMatching.test_evaluate; 8 passed before formal generation"
+}

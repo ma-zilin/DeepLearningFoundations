@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "configurations_verified": 18,
+  "all_initial_noise_and_full_trajectories_bitwise_equal": true,
+  "maximum_absolute_difference": 0.0,
+  "all_quality_metrics_equal": true,
+  "paired_comparisons_equal": true,
+  "checkpoint_and_source_hashes_match": true,
+  "timings_reproduced": false,
+  "note": "Wall-clock times vary; original raw timings retained"
+}
