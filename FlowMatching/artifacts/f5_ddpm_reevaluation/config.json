@@ -1,0 +1,61 @@
+{
+  "created_utc": "2026-10-26T10:23:00.487405+00:00",
+  "checkpoint": "diffusion/outputs/noise_predictor_g3b.pt",
+  "checkpoint_sha256": "61e9d9d0cd97e5a8bf9656086d2011adc643f23864f055b107d4075bddd41c35",
+  "historical_csv_sha256": "12b0a072ba1631ea271ddd3d828bcd3e87bfefd2663918a7f76001f6baceba6f",
+  "fm_config_sha256": "03fda2b531d4c0ab67adb4e71cef32b07456386a4e8b66afdb990d20c35be8fa",
+  "fm_metrics_sha256": "e93642d422085d9e72bd5fed7c864d556339fa5c42ead28817f7ceffb4976daa",
+  "checkpoint_metadata": {
+    "time_embedding_dim": 32,
+    "hidden_dim": 128,
+    "total_steps": 1000,
+    "beta_start": 0.0001,
+    "beta_end": 0.02,
+    "data_std": 0.3,
+    "seed": 0
+  },
+  "sampling_seeds": [
+    0,
+    1,
+    2
+  ],
+  "samples_per_seed": 4096,
+  "steps": 1000,
+  "device": "cpu",
+  "dtype": "torch.float32",
+  "torch_num_threads": 1,
+  "torch_version": "2.9.1+cu130",
+  "thresholds": {
+    "mode_ratio_min": 0.4,
+    "mode_ratio_max": 0.6,
+    "center_error_max": 0.3,
+    "coordinate_std_min": 0.15,
+    "coordinate_std_max": 0.55,
+    "abs_off_axis_mean_max": 0.15,
+    "nearest_center_radius": 0.9,
+    "outside_fraction_max": 0.05
+  },
+  "target_centers": [
+    [
+      -2.0,
+      0.0
+    ],
+    [
+      2.0,
+      0.0
+    ]
+  ],
+  "target_std": 0.3,
+  "std_definition": "Per group and coordinate sample standard deviation, correction=1; all endpoints retained",
+  "source_sha256": {
+    "FlowMatching/reevaluate_ddpm.py": "23c2e7beca9f4594b1337a120b5858f247e5ce8cfbd9a33c99ff29833bc603e1",
+    "FlowMatching/evaluate.py": "cb2aa7594f725066cceef416daf3a65a9e907ffad1dfa79d632e91784af815c4",
+    "FlowMatching/data.py": "69deaa4bfbdb8a97621e238e6607bdb93f8c362a068d0b87828aa67c7e3058b6",
+    "diffusion/reverse_sampling.py": "0cbecc6ceeda6e16acb7e4466e82659dda8ad84c9ce2f2f1818bc19e932c239f",
+    "diffusion/noise_prediction.py": "7d433bcf81f0fa054a277c4087c180415247d33ae27b71d2eaffe9aff7214ca1",
+    "diffusion/forward_diffusion.py": "57de513e288275c0e3069d13acd77e72712eede1d7a2d3489d51d0ddba932d99",
+    "diffusion/bimodal_data.py": "2491f914337c3cec151f5bf842f5cb1706a0d26ddfec246c2acc2de76bacf437"
+  },
+  "wall_clock_comparison": "Not measured in this quality reevaluation",
+  "scope": "Reuse original DDPM weights and stochastic reverse sampler; no training or schedule change"
+}

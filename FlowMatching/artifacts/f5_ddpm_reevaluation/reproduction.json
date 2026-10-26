@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "seeds_verified": [
+    0,
+    1,
+    2
+  ],
+  "all_endpoints_bitwise_equal": true,
+  "maximum_absolute_difference": 0.0,
+  "all_quality_metrics_equal": true
+}

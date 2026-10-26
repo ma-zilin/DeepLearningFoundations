@@ -1,10 +1,10 @@
 ---
 type: learning-plan
 topic: conditional-flow-matching
-status: active
-current_gate: F5
+status: complete
+current_gate: F6
 created: 2026-10-13
-updated: 2026-10-25
+updated: 2026-10-26
 progress_mode: gate-based
 ---
 
@@ -16,7 +16,7 @@ progress_mode: gate-based
 
 > 噪声与目标样本 → 概率路径 → 速度监督 → 条件速度场 → ODE 采样 → 分布评测 → 动作生成映射
 
-已有前置基础：二维 DDPM、Behavior Cloning、CNN 和 D2L Ch10；Diffusion Policy 已按“机制学习与有界验证”收尾。此前 FM 衔接只涉及插值、速度标签与 ODE 更新，不代表本阶段已完成。DP 的长程训练与多训练 seed 性能复现仍属暂缓扩展，不占用本阶段主线。
+启动时已有前置基础：二维 DDPM、Behavior Cloning、CNN 和 D2L Ch10；Diffusion Policy 已按“机制学习与有界验证”收尾。当时 FM 衔接仅涉及插值、速度标签与 ODE 更新；本阶段后续实现、验证与收尾记录见下文。DP 的长程训练与多训练 seed 性能复现仍属暂缓扩展，不占用本阶段主线。
 
 最终目标是能从公式、代码和几何直觉解释 Flow Matching，完成一个条件二维生成实验，并用受控采样实验分析积分步数与质量、延迟的关系。按 gate 推进，不指定完成天数。
 
@@ -219,6 +219,7 @@ FlowMatching/
 ├── evaluate.py       # 固定 checkpoint 的条件分布与步数评估
 ├── visualize_evaluation.py # 全部采样 seed 的终点、轨迹和质量—成本图
 ├── test_evaluate.py  # 分布指标的反例与边界检查
+├── reevaluate_ddpm.py # 原 DDPM checkpoint 的同口径质量重评测
 └── artifacts/        # 小型图表、配置、指标；数据张量仅保留本地
 ```
 
@@ -231,12 +232,12 @@ FlowMatching/
 - [x] F2：速度网络与训练闭环——固定监督诊断、正式训练/验证与机制检查完成；范围为单训练 seed 的二维速度回归。
 - [x] F3：Euler 积分与新噪声生成——解析自检、固定条件模型采样、新进程复现及本阶段机制检查完成。
 - [x] F4：条件有效性与步数—质量权衡——18 组固定 checkpoint 评估、指标独立复算及本阶段结果解释检查完成；保留全部失败配置。
-- [ ] F5：二维 DDPM 对照与证据边界——已定位介绍，待正式进入许可。
-- [ ] F6：动作生成映射与阶段收尾
+- [x] F5：二维 DDPM 对照与证据边界——同口径三采样 seed 重评测、机制与预算比较完成；DDPM 共同口径墙钟耗时未测，不作算法排名。
+- [x] F6：动作生成映射与阶段收尾——动作块、条件与执行接口映射、关键对话检查及统一证据索引完成；未实现或验证机器人策略。
 
-F0–F4 已按本阶段范围完成，范围为单训练 checkpoint 的二维条件生成及有界采样评估。下一入口为 F5，已介绍价值、范围、前置与出口，尚未获得正式进入许可；未开展 F5 的 DDPM 对照或 F6 动作生成映射。阶段完成不代表所有步数均通过质量阈值，也不代表已独立实现代码或证明完整分布匹配。
+F0–F6 已按“核心机制学习、关键对话检查与二维有界验证”的范围收尾，统一入口见 [阶段收尾索引](artifacts/f6_closeout.md)。完成不代表所有步数均通过阈值、全部知识点已无提示独立验收、已独立实现代码或完整分布精确匹配。下一方向是 ImitationPolicyLearning 的 ACT 阶段定位，范围和预算另行确定；尚未启动 ACT 或机器人策略训练。
 
-### 理解记录与验收边界（更新于 2026-10-25）
+### 理解记录与验收边界（更新于 2026-10-26）
 
 - F0 对话中已能说明：用端点构造训练路径，网络从中间位置、时间和任务条件预测速度，生成时由采样器沿预测速度场积分；生成时没有指定终点。已区分路径条件与任务条件，以及单条配对的恒定速度和模型速度场。
 - F1 对话中已显示理解：随机时间用于选择路径上的训练点；任务编号可改成独热表示；固定任务条件和峰编号后目标为单峰，混合峰编号后的总体仍为双峰。最终已能说明训练/验证保持双峰参数一致，并分别采样目标端点、起点和时间。
@@ -244,6 +245,8 @@ F0–F4 已按本阶段范围完成，范围为单训练 checkpoint 的二维条
 - F2 通过具体重叠路径例子检查：能指出相同位置、时间和任务条件下，网络缺少端点配对信息；在向右标签更常见的不等权变式中，能判断理想预测偏向右。已讲解 MSE 的条件平均速度与不可消除的条件方差，完成本阶段机制检查，不声明已经独立推导相关定理。
 - F3 对话中已能说明：采样过程中位置和时间变化，任务标签保持固定。已纠正“多次更新就必然弯曲”的说法，解释沿轨迹变化的速度方向与曲线运动的联系；网络参数在采样中固定。解析常量速度检查仅验证积分器，不构成生成质量证据。
 - F4 对话中已能指出：峰比例不足以判断分布正确，还需检查中心和离散程度；正确峰中心处的塌缩应由标准差识别。对继续增加到 1000 步是否保证更好的问题，已能判断没有这种保证。速度场偏差与积分误差的机制区别已讲解，尚未进行独立误差分解或精确 ODE 参考实验。
+- F5 对话中已指出当前 DDPM 结果与模型规模、loss 口径存在差异；经纠正，将“预测性能更好”限定为“当前模型在已测生成质量指标上更好”，并区分 loss 数值不可比较与生成质量的算法归因边界。随后使用保留权重补齐了 DDPM 缺失指标。
+- F6 对话中已能复述速度用于更新当前候选动作块、识别示范动作训练属于模仿学习，并指出任务能力需要实际闭环完成率。已纠正“不同动作之间的变化速度”，区分生成进度、动作位置与物理时间。条件平均与平均动作陷阱经多轮引导澄清，未声称已完成无提示独立推导或全部知识点书面验收。
 - 机制理解、程序运行和代码独立实现分别判断。当前代码由助手按明确请求实现；不把数值通过认定为已独立实现或精读全部源码，也不把验证 loss 改善认定为生成质量通过。
 
 ### F1 实现与运行证据（2026-10-22）
@@ -310,7 +313,7 @@ python -m FlowMatching.visualize_paths
 - 本轮数值检查通过：验证数据指纹不变，预测、loss、梯度与参数均有限。最佳和最终 checkpoint 在新进程加载后验证误差复算一致，并以 NumPy float64 独立核对误差归约。
 - checkpoint 保存网络、Adam、目标索引/路径生成器及全局随机状态；状态加载检查通过，尚未进行断点续训轨迹等价实验。
 - [配置与 seeds](artifacts/f2_training/config.json)、[结果](artifacts/f2_training/metrics.json)、[加载与独立复算记录](artifacts/f2_training/reload_checks.json)、[训练/验证曲线](artifacts/f2_training/loss.png)、[训练日志](artifacts/f2_training/train.csv)、[验证日志](artifacts/f2_training/validation.csv)。
-- 诊断权重、固定 batch、正式训练的 `best.pt` 与 `last.pt` 均按 `*.pt` 规则留在本地，不提交。正式采样计划使用本地 `artifacts/f2_training/best.pt`。
+- 诊断权重、固定 batch、正式训练的 `best.pt` 与 `last.pt` 均按 `*.pt` 规则留在本地，不提交。正式采样使用本地 `artifacts/f2_training/best.pt`。
 
 F2 证据范围：本节只支持这组二维配置、单个训练 seed 的固定监督拟合与固定验证速度误差改善。约 3 的验证 loss 尚未分解为条件方差与模型误差；模型积分生成、分布质量评测和步数比较的后续证据见 F3/F4 记录，仍未开展机器人实验。
 
@@ -373,3 +376,26 @@ python -m FlowMatching.evaluate --verify FlowMatching/artifacts/f4_evaluation
 ```
 
 上述复现需要本地忽略的权重与轨迹文件。若后续明确授权重新运行完整 F4 实验，应使用 `python -m FlowMatching.evaluate --output-dir <新的结果目录>`；评估脚本拒绝覆盖已存在的结果目录。此次进度整理不重新训练或重新运行实验。
+
+### F5 同口径 DDPM 重评测（2026-10-26）
+
+[重评测脚本](reevaluate_ddpm.py) 加载保留的 `diffusion/outputs/noise_predictor_g3b.pt`，复用原 1000 步随机反向采样器。CPU 单线程、float32，seeds=0、1、2，每组 4096 个样本；不训练、不改变 schedule，也不覆盖历史 CSV。正式生成前保存配置，按 F4 的全部阈值重算水平双峰，包括逐峰逐坐标标准差及远离比例。
+
+| 配置 | 通过 seeds | 最大中心误差 | 最大远离比例 |
+| --- | ---: | ---: | ---: |
+| DDPM，1000 步 | 3/3 | 0.0582 | 2.00% |
+| FM 水平条件，100 步 | 3/3 | 0.0688 | 4.96% |
+
+DDPM 每个 seed 的 14 项既有统计量在绝对容差 2e-6 内复现旧 CSV，最大差约 1.72e-7。NumPy 独立复算 48 项数值最大差约 5.0e-16，质量判断一致；新进程重建三组终点逐元素一致。
+
+两份权重的可学习参数量分别为 DDPM 21,250、FM 4,674。DDPM 源码默认 batch=128、Adam 学习率 3e-4、5000 次更新，但旧 checkpoint 未记录实际训练次数；FM 日志记录 batch=256、学习率 1e-3、共 2000 次更新，采样使用第 1800 次权重。另有激活、时间编码和任务条件差异，因此不能将当前质量差异归因于算法本身。DDPM 墙钟耗时未按共同协议重测，记为“未测”；调用次数之比不是耗时之比。
+
+证据：[配置与来源指纹](artifacts/f5_ddpm_reevaluation/config.json)、[统一指标](artifacts/f5_ddpm_reevaluation/metrics.json)、[完整质量对照 CSV](artifacts/f5_ddpm_reevaluation/quality_comparison.csv)、[汇总](artifacts/f5_ddpm_reevaluation/summary.md)、[终点对照图](artifacts/f5_ddpm_reevaluation/endpoints_comparison.png)、[执行检查](artifacts/f5_ddpm_reevaluation/checks.json)、[独立复算](artifacts/f5_ddpm_reevaluation/independent_checks.json)、[新进程复现](artifacts/f5_ddpm_reevaluation/reproduction.json)。重新生成的 `endpoints.pt` 与旧权重均仅保留本地。
+
+复核命令：`python -m FlowMatching.reevaluate_ddpm --verify FlowMatching/artifacts/f5_ddpm_reevaluation`。它重新采样核对，不训练或重复计时；普通运行模式会生成新评测目录，拒绝覆盖已有目录。
+
+### F6 阶段收尾（2026-10-26）
+
+已将二维点映射为 `[B,H,D_a]` 动作块，讨论观测与可选任务表示、生成速度的含义、动作生成与队列执行的分工。已澄清：条件平均是 MSE 理想解的性质，推理时不现场汇总真实标签；局部条件平均不直接要求最终动作等于示范动作均值，也不保证有限模型不会产生不合理折中。
+
+[阶段收尾索引](artifacts/f6_closeout.md) 汇总公式—代码、权重、实验与失败边界。概念内容已按用户要求整理至知识库，运行证据保留在本项目。当前完成含义是二维机制与有界验证；动作映射未包含机器人策略实现、示范训练、闭环成功率或真机验证，不等于完整理论证明或可靠策略训练。

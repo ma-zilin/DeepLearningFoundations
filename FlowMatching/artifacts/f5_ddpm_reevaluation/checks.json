@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "model_fixed_eval_no_grad": true,
+  "all_endpoints_finite": true,
+  "historical_metrics_reproduced": true,
+  "historical_absolute_tolerance": 2e-06,
+  "max_historical_metric_difference_by_seed": {
+    "0": 1.219575378463844e-07,
+    "1": 1.7177585148048236e-07,
+    "2": 9.532178779636524e-08
+  },
+  "checkpoint_historical_csv_and_sources_unchanged": true,
+  "endpoints_sha256": "222cb9fe90022f37fb43a6c4429add1f14c6a186fb9c4f0d8e8d6520d6cc3080"
+}

@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "method": "Independent NumPy float64 statistics, ddof=1; no evaluator metric imports",
+  "seeds_checked": [
+    0,
+    1,
+    2
+  ],
+  "numeric_comparisons": 48,
+  "maximum_absolute_metric_difference": 4.996003610813204e-16,
+  "all_quality_decisions_match": true,
+  "historical_csv_checkpoint_and_fm_reference_files_unchanged": true,
+  "source_syntax_and_whitespace_checked": true
+}
